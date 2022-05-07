@@ -1,0 +1,44 @@
+const Discord = require("discord.js");
+const db = require('quick.db');
+
+exports.run = async(client, message, args) => {
+  
+ const açıldıembed = new Discord.MessageEmbed()
+ .setColor('GREEN')
+ .setTitle(`Ticket Açılmıştır.`)
+ .setDescription(` Bu Ticket Başarı ile Açılmıştır. :+1:`)
+ .setFooter(`BEST and TCKA Ticket Sistemi`, client.user.avatarURL());
+  
+ const kapandıembed = new Discord.MessageEmbed()
+ .setColor('RED')
+ .setTitle(`Ticket Kapanmıştır.`)
+ .setDescription(` Bu Ticket Başarı ile Kapanmıştır. :+1:`)
+ .setFooter(`BEST and TCKA Ticket Sistemi`, client.user.avatarURL());
+  
+  const botlogg = client.channels.cache.get('889942042501845093')
+  const as = await db.fetch(`numara.${message.guild.id}`);
+  
+// const teknikekiprole = client.roles.cache.get('891623525692096572')
+  if (message.member.roles.cache.some(role => role.id === '891623525692096572')){
+    if(message.channel.name.startsWith("talep")){
+      message.channel.setName(`kapalı-${as}`)
+      message.channel.send({ embeds: [kapandıembed] })
+      botlogg.send({ content: `**Tag: ${message.author.tag}** **id: ${message.author.id}** Adlı Kişi Komut ile Bir **${message.channel.name} Adlı Ticketi Kapattı.** ` })
+      
+    } else {
+      message.reply({ content: "Bunu, Bu Kanalda Yapamazsın!" }).then(m => {
+        setTimeout(() => {
+          m.delete();
+        }, 9600)
+      })
+    }
+  };
+  
+};
+exports.conf = {
+  aliases: ['tkapat', "tika"]
+};
+
+exports.help = {
+  name: "ticketkapat"
+}; 
